@@ -3,29 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raw Code</title>
+    <title>Code Editor</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
         body {
-            display: none; /* Hide the body */
+            background-color: #1d1f20;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .editor-container {
+            width: 80%;
+            max-width: 800px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .editor-container textarea {
+            width: 100%;
+            height: 300px;
+            background: #1d1f20;
+            color: #fff;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+            resize: none;
+        }
+
+        .editor-container .button {
+            width: 100%;
+            padding: 10px;
+            background: #00ffff;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: 0.3s ease;
+        }
+
+        .editor-container .button:hover {
+            background: #00b3b3;
+        }
+
+        .saved-message {
+            display: none;
+            margin-top: 10px;
+            text-align: center;
+            color: #00ff00;
+        }
+
+        .raw-link {
+            display: none;
+            margin-top: 10px;
+            text-align: center;
+            color: #00ff00;
+        }
+
+        .raw-link a {
+            color: #00ffff;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const codeID = urlParams.get('id');
 
-        if (codeID) {
-            const savedCode = localStorage.getItem(codeID);
-            if (savedCode) {
-                // Output the raw code to the document
-                document.body.textContent = savedCode;
-            } else {
-                document.body.textContent = "Code not found.";
-            }
-        } else {
-            document.body.textContent = "Invalid raw link.";
+    <div class="editor-container">
+        <h2 style="text-align:center;">Code Editor</h2>
+        <textarea id="codeInput" placeholder="Type your code here..."></textarea>
+        <button class="button" id="saveButton">Save Code</button>
+        <div class="saved-message" id="savedMessage">Code saved successfully!</div>
+        <div class="raw-link" id="rawLinkContainer">
+            <p>Your raw link: <a id="rawLink" target="_blank">View Raw Code</a></p>
+        </div>
+    </div>
+
+    <script>
+        const saveButton = document.getElementById('saveButton');
+        const codeInput = document.getElementById('codeInput');
+        const savedMessage = document.getElementById('savedMessage');
+        const rawLinkContainer = document.getElementById('rawLinkContainer');
+        const rawLink = document.getElementById('rawLink');
+
+        function generateUniqueID() {
+            return 'xxxx-4xxx-yxxx-xxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
         }
+
+        saveButton.addEventListener('click', function() {
+            const code = codeInput.value;
+
+            if (code.trim() === "") {
+                alert("Please enter some code before saving.");
+                return;
+            }
+
+            // Generate a unique ID for this code
+            const uniqueID = generateUniqueID();
+
+            // Save the code in localStorage (this can later be replaced with a database save)
+            localStorage.setItem(uniqueID, code);
+
+            // Show saved message
+            savedMessage.style.display = "block";
+            setTimeout(() => {
+                savedMessage.style.display = "none";
+            }, 2000);
+
+            // Generate the raw link and display it
+            const rawUrl = window.location.origin + `/raw.html?id=${uniqueID}`;
+            rawLink.href = rawUrl;
+            rawLinkContainer.style.display = "block";
+        });
+
+        // Load saved code if it exists
+        window.addEventListener('load', function() {
+            const savedCode = localStorage.getItem('savedCode');
+            if (savedCode) {
+                codeInput.value = savedCode;
+            }
+        });
     </script>
+
 </body>
 </html>
