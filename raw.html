@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raw Code</title>
     <style>
-        body { background-color: #1d1f20; color: #fff; font-family: monospace; padding: 20px; }
-        pre { white-space: pre-wrap; word-wrap: break-word; background: #1d1f20; color: #00ffff; padding: 10px; border-radius: 5px; }
+        body {
+            display: none; /* Hide the body */
+        }
     </style>
 </head>
 <body>
-    <pre id="rawCode">Loading...</pre>
-
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const codeID = urlParams.get('id');
@@ -19,12 +18,13 @@
         if (codeID) {
             const savedCode = localStorage.getItem(codeID);
             if (savedCode) {
-                document.getElementById('rawCode').textContent = savedCode;
+                // Output the raw code to the document
+                document.body.textContent = savedCode;
             } else {
-                document.getElementById('rawCode').textContent = "Code not found.";
+                document.body.textContent = "Code not found.";
             }
         } else {
-            document.getElementById('rawCode').textContent = "Invalid raw link.";
+            document.body.textContent = "Invalid raw link.";
         }
     </script>
 </body>
